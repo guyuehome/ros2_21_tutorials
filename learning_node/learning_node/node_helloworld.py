@@ -1,0 +1,23 @@
+#!/usr/bin/env python3 
+# -*- coding: utf-8 -*-
+
+"""
+ROS2节点示例
+按照某一频率发布“Hello World”日志信息，使用面向对象的实现方式
+
+"""
+
+import rclpy                                     # ROS2 Python接口库
+from rclpy.node import Node                      # ROS2 节点类
+import time
+
+def main(args=None):                             # ROS2节点主入口main函数
+    rclpy.init(args=args)                        # ROS2 Python接口初始化
+    node = Node("node_helloworld")               # 创建ROS2节点对象并进行初始化
+    
+    while rclpy.ok():                            # ROS2系统是否正常运行
+        node.get_logger().info("Hello World")    # ROS2日志输出
+        time.sleep(0.5)                          # 休眠控制循环时间
+    
+    node.destroy_node()                          # 销毁节点对象    
+    rclpy.shutdown()                             # 关闭ROS2 Python接口
