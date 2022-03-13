@@ -1,5 +1,5 @@
-bool enable
+bool enable     # 定义动作的目标，表示动作开始的指令
 ---
-bool finish
+bool finish     # 定义动作的结果，表示是否成功执行
 ---
-int32 state
+int32 state     # 定义动作的反馈，表示当前执行到的位置

@@ -1,4 +1,4 @@
-int64 a
-int64 b
+int64 a        # 第一个加数
+int64 b        # 第二个加数
 ---
-int64 sum
+int64 sum      # 求和结果

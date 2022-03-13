@@ -1,4 +1,4 @@
-bool get
+bool get      # 获取目标位置的指令
 ---
-int32 x
-int32 y
+int32 x       # 目标的X坐标
+int32 y       # 目标的Y坐标

@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-ROS2话题示例
-按照某一频率发布“Hello World”话题消息
-
+@作者: 古月居(www.guyuehome.com)
+@说明: ROS2话题示例-发布“Hello World”话题
 """
 
 import rclpy                                     # ROS2 Python接口库
@@ -15,6 +14,7 @@ from std_msgs.msg import String                  # 字符串消息类型
 创建一个发布者节点
 """
 class PublisherNode(Node):
+    
     def __init__(self, name):
         super().__init__(name)                                    # ROS2节点父类初始化
         self.pub = self.create_publisher(String, "chatter", 10)   # 创建发布者对象（消息类型、话题名、队列长度）

@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-ROS2节点示例
-按照某一频率发布“Hello World”日志信息，使用面向对象的实现方式
-
+@作者: 古月居(www.guyuehome.com)
+@说明: ROS2节点示例-发布“Hello World”日志信息, 使用面向对象的实现方式
 """
 
 import rclpy                                     # ROS2 Python接口库
