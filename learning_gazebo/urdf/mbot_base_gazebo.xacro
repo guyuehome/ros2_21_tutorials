@@ -92,11 +92,10 @@
 
     <!-- Macro for robot caster -->
     <xacro:macro name="caster" params="prefix reflect">
-        <joint name="${prefix}_caster_joint" type="continuous">
+        <joint name="${prefix}_caster_joint" type="fixed">
             <origin xyz="${reflect*caster_joint_x} 0 ${-(base_length/2 + caster_radius)}" rpy="0 0 0"/>
             <parent link="base_link"/>
             <child link="${prefix}_caster_link"/>
-            <axis xyz="0 1 0"/>
         </joint>
 
         <link name="${prefix}_caster_link">
@@ -170,26 +169,22 @@
         <!-- controller -->
         <gazebo>
             <plugin name="differential_drive_controller" 
-                    filename="libgazebo_ros_diff_drive.so">
-                <rosDebugLevel>Debug</rosDebugLevel>
-                <publishWheelTF>true</publishWheelTF>
-                <robotNamespace>/</robotNamespace>
-                <publishTf>1</publishTf>
-                <publishWheelJointState>true</publishWheelJointState>
-                <alwaysOn>true</alwaysOn>
-                <updateRate>100.0</updateRate>
-                <legacyMode>true</legacyMode>
-                <leftJoint>left_wheel_joint</leftJoint>
-                <rightJoint>right_wheel_joint</rightJoint>
-                <wheelSeparation>${wheel_joint_y*2}</wheelSeparation>
-                <wheelDiameter>${2*wheel_radius}</wheelDiameter>
-                <broadcastTF>1</broadcastTF>
-                <wheelTorque>30</wheelTorque>
-                <wheelAcceleration>1.8</wheelAcceleration>
-                <commandTopic>cmd_vel</commandTopic>
-                <odometryFrame>odom</odometryFrame> 
-                <odometryTopic>odom</odometryTopic> 
-                <robotBaseFrame>base_footprint</robotBaseFrame>
+                    filename="libgazebo_ros_diff_drive.so">                
+                  <update_rate>30</update_rate>
+                  <left_joint>left_wheel_joint</left_joint>
+                  <right_joint>right_wheel_joint</right_joint>
+                  <wheel_separation>${wheel_joint_y*2}</wheel_separation>
+                  <wheel_diameter>${2*wheel_radius}</wheel_diameter>
+                  <max_wheel_torque>20</max_wheel_torque>
+                  <max_wheel_acceleration>1.0</max_wheel_acceleration>
+                  <command_topic>cmd_vel</command_topic>
+                  <publish_odom>true</publish_odom>
+                  <publish_odom_tf>true</publish_odom_tf>
+                  <publish_wheel_tf>true</publish_wheel_tf>
+                  <odometry_topic>odom</odometry_topic>
+                  <odometry_frame>odom</odometry_frame>
+                  <robot_base_frame>base_footprint</robot_base_frame>
+                  <odometry_source>1</odometry_source>
             </plugin>
         </gazebo> 
     </xacro:macro>

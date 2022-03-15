@@ -1,0 +1,382 @@
+<?xml version="1.0"?>
+<robot name="two_wheeled_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- ****************** ROBOT CONSTANTS *******************************  -->
+  <!-- Define the size of the robot's main chassis in meters -->
+  <xacro:property name="base_width" value="0.39"/>
+  <xacro:property name="base_length" value="0.70"/>
+  <xacro:property name="base_height" value="0.20"/>
+	
+  <!-- Define the shape of the robot's two back wheels in meters -->
+  <xacro:property name="wheel_radius" value="0.14"/>
+  <xacro:property name="wheel_width" value="0.06"/>
+
+  <!-- x-axis points forward, y-axis points to left, z-axis points upwards -->
+  <!-- Define the gap between the wheel and chassis along y-axis in meters -->
+  <xacro:property name="wheel_ygap" value="0.035"/>
+
+  <!-- Position the wheels along the z-axis -->
+  <xacro:property name="wheel_zoff" value="0.05"/>
+
+  <!-- Position the wheels along the x-axis -->
+  <xacro:property name="wheel_xoff" value="0.221"/>
+
+  <!-- Position the caster wheel along the x-axis -->
+  <xacro:property name="caster_xoff" value="0.217"/>
+
+  <!-- Define intertial property macros  -->
+  <xacro:macro name="box_inertia" params="m w h d">
+    <inertial>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 ${pi/2}"/>
+      <mass value="${m}"/>
+      <inertia ixx="${(m/12) * (h*h + d*d)}" ixy="0.0" ixz="0.0" iyy="${(m/12) * (w*w + d*d)}" iyz="0.0" izz="${(m/12) * (w*w + h*h)}"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="cylinder_inertia" params="m r h">
+    <inertial>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 0" />
+      <mass value="${m}"/>
+      <inertia ixx="${(m/12) * (3*r*r + h*h)}" ixy = "0" ixz = "0" iyy="${(m/12) * (3*r*r + h*h)}" iyz = "0" izz="${(m/2) * (r*r)}"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="sphere_inertia" params="m r">
+    <inertial>
+      <mass value="${m}"/>
+      <inertia ixx="${(2/5) * m * (r*r)}" ixy="0.0" ixz="0.0" iyy="${(2/5) * m * (r*r)}" iyz="0.0" izz="${(2/5) * m * (r*r)}"/>
+    </inertial>
+  </xacro:macro>
+  
+  <!-- ********************** ROBOT BASE *********************************  -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 -0.05" rpy="1.5707963267949 0 3.141592654"/>
+      <geometry>
+        <box size="${base_length} ${base_width} ${base_height}"/>
+      </geometry>
+      <material name="Red">
+        <color rgba="1.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="${base_length} ${base_width} ${base_height}"/>
+      </geometry>
+    </collision>
+
+    <xacro:box_inertia m="15.0" w="${base_width}" d="${base_length}" h="${base_height}"/>
+  </link>
+
+  <gazebo reference="base_link">
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  
+  <!-- ****************** ROBOT BASE FOOTPRINT ***************************  -->
+  <!-- Define the center of the main robot chassis projected on the ground -->	
+  <link name="base_footprint">
+  	<xacro:box_inertia m="0" w="0" d="0" h="0"/>
+  </link>
+
+  <!-- The base footprint of the robot is located underneath the chassis -->
+  <joint name="base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_footprint"/>
+    <origin xyz="0.0 0.0 ${-(wheel_radius+wheel_zoff)}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- *********************** DRIVE WHEELS ******************************  -->
+  <xacro:macro name="wheel" params="prefix x_reflect y_reflect">
+    <link name="${prefix}_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+            <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+        </geometry>
+        <material name="Gray">
+          <color rgba="0.5 0.5 0.5 1.0"/>
+        </material>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/> 
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+        </geometry>
+      </collision>
+
+      <xacro:cylinder_inertia m="0.5" r="${wheel_radius}" h="${wheel_width}"/>
+    </link>
+
+    <!-- Connect the wheels to the base_link at the appropriate location, and 
+         define a continuous joint to allow the wheels to freely rotate about
+         an axis -->
+    <joint name="${prefix}_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${prefix}_link"/>
+      <origin xyz="${x_reflect*wheel_xoff} ${y_reflect*(base_width/2+wheel_ygap)} ${-wheel_zoff}" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- Instantiate two wheels using the macro we just made through the 
+       xacro:wheel tags. We also define the parameters to have one wheel
+       on both sides at the back of our robot (i.e. x_reflect=-1). -->
+  <xacro:wheel prefix="drivewhl_l" x_reflect="-1" y_reflect="1" />
+  <xacro:wheel prefix="drivewhl_r" x_reflect="-1" y_reflect="-1" />
+
+  <!-- *********************** CASTER WHEEL ******************************  -->
+  <!-- We add a caster wheel. It will be modeled as sphere.
+       We define the wheel’s geometry, material and the joint to connect it to 
+       base_link at the appropriate location. -->
+  <link name="front_caster">
+    <visual>
+      <geometry>
+        <sphere radius="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
+      </geometry>
+      <material name="Cyan">
+        <color rgba="0 1.0 1.0 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
+      </geometry>
+    </collision>
+
+    <xacro:sphere_inertia m="0.5" r="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
+  </link>
+  
+  <gazebo reference="front_caster">
+    <mu1>0.01</mu1>
+    <mu2>0.01</mu2>
+    <material>Gazebo/White</material>
+  </gazebo>
+
+  <joint name="caster_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="front_caster"/>
+    <origin xyz="${caster_xoff} 0.0 ${-(base_height/2)}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- *********************** IMU SETUP *********************************  -->
+  <!-- Each sensor must be attached to a link.                              --> 
+  <link name="imu_link">
+    <visual>
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+    </visual>
+    
+    <collision>
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+    </collision>
+      
+    <xacro:box_inertia m="0.1" w="0.1" d="0.1" h="0.1"/>
+  </link>
+    
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0.01"/>
+  </joint>
+    
+  <gazebo reference="imu_link">
+    <gravity>true</gravity>
+    <sensor name="twr_imu" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+      <imu>
+        <orientation>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-3</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-3</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-3</stddev>
+            </noise>
+          </z>
+        </orientation>
+        <angular_velocity>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-4</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-4</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-4</stddev>
+            </noise>
+          </z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>1.7e-2</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>1.7e-2</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>1.7e-2</stddev>
+            </noise>
+          </z>
+        </linear_acceleration>
+      </imu>
+      <plugin name="two_wheeled_robot_imu" filename="libgazebo_ros_imu_sensor.so">
+        <initial_orientation_as_reference>false</initial_orientation_as_reference>
+        <frame_name>imu_link</frame_name>
+        <ros>
+          <namespace>/imu</namespace>
+          <remapping>~/out:=data</remapping>
+        </ros>
+      </plugin>
+    </sensor>
+</gazebo>
+
+  <!-- *********************** LIDAR SETUP **********************************  -->
+ <link name="lidar_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.125"/>
+      <inertia ixx="0.001"  ixy="0"  ixz="0" iyy="0.001" iyz="0" izz="0.001" />
+    </inertial>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+         <cylinder radius="0.0508" length="0.75"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+         <cylinder radius="0.0508" length="0.75"/>
+      </geometry>
+    </visual>
+  </link>
+    
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0.215 0.0 0.30" rpy="0 0 0"/>
+  </joint>
+    
+  <gazebo reference="lidar_link">
+    <sensor name="lidar" type="ray">
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <update_rate>5</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>120</samples>
+            <resolution>1.000000</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.3</min>
+          <max>15.0</max>
+          <resolution>0.015</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="scan" filename="libgazebo_ros_ray_sensor.so">
+        <ros>
+          <remapping>~/out:=scan</remapping>
+        </ros>
+        <output_type>sensor_msgs/LaserScan</output_type>
+        <frame_name>lidar_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+  <gazebo reference="lidar_link">
+    <mu1>0.01</mu1>
+    <mu2>0.01</mu2>
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+
+ <!-- *********************** WHEEL ODOMETRY ***************************    --> 
+  <gazebo>
+    <plugin name="two_wheeled_robot_diff_drive" filename="libgazebo_ros_diff_drive.so">
+
+      <update_rate>30</update_rate>
+     
+      <!-- wheels -->
+      <left_joint>drivewhl_l_joint</left_joint>
+      <right_joint>drivewhl_r_joint</right_joint>
+
+      <!-- kinematics -->
+      <wheel_separation>0.52</wheel_separation>
+      <wheel_diameter>0.28</wheel_diameter>
+
+      <!-- limits -->
+      <max_wheel_torque>20</max_wheel_torque>
+      <max_wheel_acceleration>1.0</max_wheel_acceleration>
+
+      <!-- Receive velocity commands on this ROS topic -->
+      <command_topic>cmd_vel</command_topic>
+
+      <!-- output -->
+      <!-- When false, publish no wheel odometry data to a ROS topic -->
+      <publish_odom>true</publish_odom>
+
+      <!-- When true, publish coordinate transform from odom to base_footprint -->
+      <!-- I usually use the robot_localization package to publish this transform -->   
+      <publish_odom_tf>false</publish_odom_tf>
+    
+      <!-- When true, publish coordinate transform from base_link to the wheels -->
+      <!-- The robot_state_publisher package is often used to publish this transform -->   
+      <publish_wheel_tf>true</publish_wheel_tf>
+
+      <odometry_topic>odom</odometry_topic>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+
+      <odometry_source>1</odometry_source>
+      <ros>
+        <remapping>odom:=wheel/odometry</remapping>
+      </ros>
+    </plugin>
+  </gazebo>
+</robot>

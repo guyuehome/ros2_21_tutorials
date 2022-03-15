@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <robot name="arm" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <xacro:include filename="$(find learning_urdf)/urdf/mbot_base_gazebo.xacro" />
-    <xacro:include filename="$(find learning_urdf)/urdf/sensors/camera_gazebo.xacro" />
+    <xacro:include filename="$(find learning_gazebo)/urdf/mbot_base_gazebo.xacro" />
+    <xacro:include filename="$(find learning_gazebo)/urdf/sensors/camera_gazebo.xacro" />
 
     <xacro:property name="camera_offset_x" value="0.17" />
     <xacro:property name="camera_offset_y" value="0" />
