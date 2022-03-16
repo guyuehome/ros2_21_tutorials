@@ -23,9 +23,10 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-        	'static_turtle_tf2_broadcaster = learning_tf.static_turtle_tf2_broadcaster:main',
-        	'turtle_tf2_broadcaster = learning_tf.turtle_tf2_broadcaster:main',
-        	'turtle_tf2_listener = learning_tf.turtle_tf2_listener:main',
+        	'static_tf_broadcaster = learning_tf.static_tf_broadcaster:main',
+        	'turtle_tf_broadcaster = learning_tf.turtle_tf_broadcaster:main',
+        	'tf_listener = learning_tf.tf_listener:main',
+        	'turtle_following = learning_tf.turtle_following:main',
         ],
     },
 )

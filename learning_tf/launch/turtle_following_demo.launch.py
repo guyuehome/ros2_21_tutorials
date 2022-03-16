@@ -13,7 +13,7 @@ def generate_launch_description():
         ),
         Node(
             package='learning_tf',
-            executable='turtle_tf2_broadcaster',
+            executable='turtle_tf_broadcaster',
             name='broadcaster1',
             parameters=[
                 {'turtlename': 'turtle1'}
@@ -25,7 +25,7 @@ def generate_launch_description():
         ),
         Node(
             package='learning_tf',
-            executable='turtle_tf2_broadcaster',
+            executable='turtle_tf_broadcaster',
             name='broadcaster2',
             parameters=[
                 {'turtlename': 'turtle2'}
@@ -33,7 +33,7 @@ def generate_launch_description():
         ),
         Node(
             package='learning_tf',
-            executable='turtle_tf2_listener',
+            executable='turtle_following',
             name='listener',
             parameters=[
                 {'target_frame': LaunchConfiguration('target_frame')}
