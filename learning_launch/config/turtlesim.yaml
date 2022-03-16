@@ -1,0 +1,5 @@
+/turtlesim2/sim:
+   ros__parameters:
+      background_b: 0
+      background_g: 0
+      background_r: 0
