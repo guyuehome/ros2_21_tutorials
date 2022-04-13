@@ -18,9 +18,11 @@ class SubscriberNode(Node):
     def __init__(self, name):
         super().__init__(name)                                                    # ROS2节点父类初始化
         self.sub = self.create_subscription(\
-            String, "object_position", self.listener_callback, 10)                # 创建订阅者对象（消息类型、话题名、订阅者回调函数、队列长度
+            ObjectPosition, "/object_position", self.listener_callback, 10)       # 创建订阅者对象（消息类型、话题名、订阅者回调函数、队列长度
+
     def listener_callback(self, msg):                                             # 创建回调函数，执行收到话题消息后对数据的处理
         self.get_logger().info('Target Position: "(%d, %d)"' % (msg.x, msg.y))    # 输出日志信息，提示订阅收到的话题消息
+
         
 def main(args=None):                                 # ROS2节点主入口main函数
     rclpy.init(args=args)                            # ROS2 Python接口初始化

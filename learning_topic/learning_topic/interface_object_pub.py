@@ -59,7 +59,7 @@ class ImageSubscriber(Node):
         image = self.cv_bridge.imgmsg_to_cv2(data, 'bgr8')      # 将ROS的图像消息转化成OpenCV图像
         position = ObjectPosition()
         self.object_detect(image)                               # 苹果检测
-        position.x, position.y = self.objectX, self.objectY
+        position.x, position.y = int(self.objectX), int(self.objectY)
         self.pub.publish(position)                              # 发布目标位置
 
 def main(args=None):                                        # ROS2节点主入口main函数

@@ -30,14 +30,15 @@ def object_detect(image):
         cv2.circle(image, (int(x+w/2), int(y+h/2)), 5, (0, 255, 0), -1)           # 将苹果的图像中心点画出来
 	    
     cv2.imshow("object", image)                                                    # 使用OpenCV显示处理后的图像效果
-    cv2.waitKey(50)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 def main(args=None):                                                              # ROS2节点主入口main函数
     rclpy.init(args=args)                                                         # ROS2 Python接口初始化
     node = Node("node_object")                                                     # 创建ROS2节点对象并进行初始化
     node.get_logger().info("ROS2节点示例：检测图片中的苹果")
 
-    image = cv2.imread('/home/hcx/ros2/dev_ws/src/learning_node/learning_node/apple.jpg')  # 读取图像
+    image = cv2.imread('/home/hcx/dev_ws/src/ros2_21_tutorials/learning_node/learning_node/apple.jpg')  # 读取图像
     object_detect(image)                                                            # 苹果检测
     rclpy.spin(node)                                                               # 循环等待ROS2退出
     node.destroy_node()                                                            # 销毁节点对象

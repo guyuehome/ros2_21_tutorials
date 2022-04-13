@@ -29,7 +29,7 @@ class ImagePublisher(Node):
         
         if ret == True:                                                  # 如果图像读取成功
             self.publisher_.publish(
-                self.cv_bridge.cv2_to_imgmsg(frame))                     # 发布图像消息
+                self.cv_bridge.cv2_to_imgmsg(frame, 'bgr8'))             # 发布图像消息
 
         self.get_logger().info('Publishing video frame')                 # 输出日志信息，提示已经完成图像话题发布
 

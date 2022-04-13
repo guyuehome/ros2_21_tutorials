@@ -42,7 +42,7 @@ class ImageSubscriber(Node):
                        (0, 255, 0), -1)                         # 将苹果的图像中心点画出来
 
         cv2.imshow("object", image)                             # 使用OpenCV显示处理后的图像效果
-        cv2.waitKey(50)
+        cv2.waitKey(10)
 
     def listener_callback(self, data):
         self.get_logger().info('Receiving video frame')         # 输出日志信息，提示已进入回调函数

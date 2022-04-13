@@ -38,10 +38,11 @@ def main(args=None):                                                       # ROS
     node.get_logger().info("ROS2节点示例：检测图片中的苹果")
 
     cap = cv2.VideoCapture(0)
+
     
     while rclpy.ok():
         ret, image = cap.read()          # 读取一帧图像
-        
+         
         if ret == True:
             object_detect(image)          # 苹果检测
         
