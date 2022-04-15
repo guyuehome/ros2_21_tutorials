@@ -26,12 +26,12 @@ class ImageSubscriber(Node):
                   'image_raw', self.listener_callback, 10) 
     self.cv_bridge = CvBridge()                             # 创建一个图像转换对象，用于OpenCV图像与ROS的图像消息的互相转换
 
-    self.declare_parameter('red_h_upper', '0')              # 创建一个参数，表示阈值上限
-    self.declare_parameter('red_h_lower', '180')            # 创建一个参数，表示阈值下限
+    self.declare_parameter('red_h_upper', 0)                # 创建一个参数，表示阈值上限
+    self.declare_parameter('red_h_lower', 0)                # 创建一个参数，表示阈值下限
     
   def object_detect(self, image):
-    upper_red[0] = int(self.get_parameter('red_h_upper').get_parameter_value().string_value)  # 读取阈值上限的参数值
-    lower_red[0] = int(self.get_parameter('red_h_lower').get_parameter_value().string_value)  # 读取阈值下限的参数值
+    upper_red[0] = self.get_parameter('red_h_upper').get_parameter_value().integer_value      # 读取阈值上限的参数值
+    lower_red[0] = self.get_parameter('red_h_lower').get_parameter_value().integer_value      # 读取阈值下限的参数值
     self.get_logger().info('Get Red H Upper: %d, Lower: %d' % (upper_red[0], lower_red[0]))   # 通过日志打印读取到的参数值
     
     hsv_img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)                                          # 图像从BGR颜色模型转换为HSV模型
