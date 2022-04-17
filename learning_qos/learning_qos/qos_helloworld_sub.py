@@ -20,9 +20,9 @@ class SubscriberNode(Node):
         super().__init__(name)                                    # ROS2节点父类初始化
         
         qos_profile = QoSProfile(                                 # 创建一个QoS原则
-            # reliability=QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT,
-            reliability=QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE,
-            history=QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_LAST,
+            # reliability=QoSReliabilityPolicy.BEST_EFFORT,
+            reliability=QoSReliabilityPolicy.RELIABLE,
+            history=QoSHistoryPolicy.KEEP_LAST,
             depth=1
         )
         
