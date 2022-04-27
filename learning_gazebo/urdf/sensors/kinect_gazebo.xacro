@@ -9,7 +9,7 @@
             <visual>
                 <origin xyz="0 0 0" rpy="0 0 ${M_PI/2}"/>
                 <geometry>
-                    <mesh filename="package://learning_gazebo/meshes/kinect.dae" />
+                    <box size="0.15 0.04 0.04" />
                 </geometry>
             </visual>
             <collision>
