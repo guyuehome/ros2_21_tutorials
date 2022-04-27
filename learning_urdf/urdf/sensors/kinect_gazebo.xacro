@@ -9,7 +9,7 @@
             <visual>
                 <origin xyz="0 0 0" rpy="0 0 ${M_PI/2}"/>
                 <geometry>
-                    <mesh filename="package://mbot_description/meshes/kinect.dae" />
+                    <mesh filename="package://learning_urdf/meshes/kinect.dae" />
                 </geometry>
             </visual>
             <collision>
@@ -30,8 +30,9 @@
         <gazebo reference="${prefix}_link">
             <sensor type="depth" name="${prefix}">
                 <always_on>true</always_on>
-                <update_rate>20.0</update_rate>
-                <camera>
+                <update_rate>15.0</update_rate>
+                <pose>0 0 0 0 0 0</pose>
+                <camera name="kinect">
                     <horizontal_fov>${60.0*M_PI/180.0}</horizontal_fov>
                     <image>
                         <format>R8G8B8</format>
@@ -43,23 +44,20 @@
                         <far>8.0</far>
                     </clip>
                 </camera>
-                <plugin name="kinect_${prefix}_controller" filename="libgazebo_ros_openni_kinect.so">
-                    <cameraName>${prefix}</cameraName>
-                    <alwaysOn>true</alwaysOn>
-                    <updateRate>10</updateRate>
-                    <imageTopicName>rgb/image_raw</imageTopicName>
-                    <depthImageTopicName>depth/image_raw</depthImageTopicName>
-                    <pointCloudTopicName>depth/points</pointCloudTopicName>
-                    <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
-                    <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
-                    <frameName>${prefix}_frame_optical</frameName>
-                    <baseline>0.1</baseline>
-                    <distortion_k1>0.0</distortion_k1>
-                    <distortion_k2>0.0</distortion_k2>
-                    <distortion_k3>0.0</distortion_k3>
-                    <distortion_t1>0.0</distortion_t1>
-                    <distortion_t2>0.0</distortion_t2>
-                    <pointCloudCutoff>0.4</pointCloudCutoff>
+                <plugin name="kinect_${prefix}_controller" filename="libgazebo_ros_camera.so">
+		 		 	<ros>
+						<!-- <namespace>${prefix}</namespace> -->
+						<remapping>${prefix}/image_raw:=rgb/image_raw</remapping>
+						<remapping>${prefix}/image_depth:=depth/image_raw</remapping>
+						<remapping>${prefix}/camera_info:=rgb/camera_info</remapping>
+						<remapping>${prefix}/camera_info_depth:=depth/camera_info</remapping>
+						<remapping>${prefix}/points:=depth/points</remapping>
+					</ros>
+					<camera_name>${prefix}</camera_name>
+					<frame_name>${prefix}_frame_optical</frame_name>
+				    <hack_baseline>0.07</hack_baseline>
+				    <min_depth>0.001</min_depth>
+				    <max_depth>300.0</max_depth>
                 </plugin>
             </sensor>
         </gazebo>

@@ -52,18 +52,14 @@
                     </noise>
                 </camera>
                 <plugin name="gazebo_camera" filename="libgazebo_ros_camera.so">
-                    <alwaysOn>true</alwaysOn>
-                    <updateRate>0.0</updateRate>
-                    <cameraName>/camera</cameraName>
-                    <imageTopicName>image_raw</imageTopicName>
-                    <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-                    <frameName>camera_link</frameName>
-                    <hackBaseline>0.07</hackBaseline>
-                    <distortionK1>0.0</distortionK1>
-                    <distortionK2>0.0</distortionK2>
-                    <distortionK3>0.0</distortionK3>
-                    <distortionT1>0.0</distortionT1>
-                    <distortionT2>0.0</distortionT2>
+				    <ros>
+				        <!-- <namespace>stereo</namespace> -->
+				        <remapping>~/image_raw:=image_raw</remapping>
+				        <remapping>~/camera_info:=camera_info</remapping>
+				    </ros>
+				    <camera_name>${prefix}</camera_name>
+				    <frame_name>${prefix}_link</frame_name>
+				    <hack_baseline>0.2</hack_baseline>
                 </plugin>
             </sensor>
         </gazebo>

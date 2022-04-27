@@ -33,9 +33,7 @@
 
         <gazebo reference="${prefix}_link">
             <sensor type="ray" name="rplidar">
-                <pose>0 0 0 0 0 0</pose>
-                <visualize>false</visualize>
-                <update_rate>5.5</update_rate>
+                <update_rate>20</update_rate>
                 <ray>
                     <scan>
                       <horizontal>
@@ -47,7 +45,7 @@
                     </scan>
                     <range>
                       <min>0.10</min>
-                      <max>6.0</max>
+                      <max>30.0</max>
                       <resolution>0.01</resolution>
                     </range>
                     <noise>
@@ -56,9 +54,12 @@
                       <stddev>0.01</stddev>
                     </noise>
                 </ray>
-                <plugin name="gazebo_rplidar" filename="libgazebo_ros_laser.so">
-                    <topicName>/scan</topicName>
-                    <frameName>laser_link</frameName>
+                <plugin name="gazebo_rplidar" filename="libgazebo_ros_ray_sensor.so">
+		      <ros>
+			<namespace>/</namespace>
+			<remapping>~/out:=scan</remapping>
+		      </ros>
+		      <output_type>sensor_msgs/LaserScan</output_type>
                 </plugin>
             </sensor>
         </gazebo>
