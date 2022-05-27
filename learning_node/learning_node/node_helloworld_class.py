@@ -23,6 +23,5 @@ class HelloWorldNode(Node):
 def main(args=None):                                 # ROS2节点主入口main函数
     rclpy.init(args=args)                            # ROS2 Python接口初始化
     node = HelloWorldNode("node_helloworld_class")   # 创建ROS2节点对象并进行初始化
-    rclpy.spin(node)                                 # 循环等待ROS2退出
     node.destroy_node()                              # 销毁节点对象
     rclpy.shutdown()                                 # 关闭ROS2 Python接口

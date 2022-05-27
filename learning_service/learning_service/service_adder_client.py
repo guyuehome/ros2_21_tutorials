@@ -33,7 +33,7 @@ def main(args=None):
     while rclpy.ok():                                                             # ROS2系统正常运行
         rclpy.spin_once(node)                                                     # 循环执行一次节点
 
-        if node.future.done():                                                    # 节点是否运行完成
+        if node.future.done():                                                    # 数据是否处理完成
             try:
                 response = node.future.result()                                   # 接收服务器端的反馈数据
             except Exception as e:
