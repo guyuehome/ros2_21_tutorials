@@ -6,3 +6,5 @@
 - 博客泡泡：[https://www.guyuehome.com/](https://www.guyuehome.com/)
 
 ![课程大纲](docs/课程大纲.png)
+
+![交流群](docs/交流群.png)
