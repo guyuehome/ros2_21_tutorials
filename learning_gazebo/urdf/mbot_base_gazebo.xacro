@@ -75,6 +75,8 @@
 
         <gazebo reference="${prefix}_wheel_link">
             <material>Gazebo/Gray</material>
+            <mu1>100000.0</mu1>
+            <mu2>100000.0</mu2>
         </gazebo>
 
         <!-- Transmission is important to link the joints and the controller -->
