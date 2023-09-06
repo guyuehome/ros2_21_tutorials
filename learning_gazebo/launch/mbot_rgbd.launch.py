@@ -17,7 +17,7 @@ def generate_launch_description():
 
     # Process the URDF file
     pkg_path = os.path.join(get_package_share_directory('learning_gazebo'))
-    xacro_file = os.path.join(pkg_path,'urdf','mbot_with_kinect_gazebo.xacro')
+    xacro_file = os.path.join(pkg_path,'urdf','mbot_with_rgbd_gazebo.xacro')
     robot_description_config = xacro.process_file(xacro_file)
     
     # Create a robot_state_publisher node

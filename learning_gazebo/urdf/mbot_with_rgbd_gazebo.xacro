@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<robot name="arm" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find learning_gazebo)/urdf/mbot_base_gazebo.xacro" />
+    <xacro:include filename="$(find learning_gazebo)/urdf/sensors/rgbd_gazebo.xacro" />
+
+    <xacro:property name="rgbd_offset_x" value="0.15" />
+    <xacro:property name="rgbd_offset_y" value="0" />
+    <xacro:property name="rgbd_offset_z" value="0.11" />
+
+    <!-- rgbd -->
+    <joint name="rgbd_joint" type="fixed">
+        <origin xyz="${rgbd_offset_x} ${rgbd_offset_y} ${rgbd_offset_z}" rpy="0 0 0" />
+        <parent link="base_link"/>
+        <child link="rgbd_link"/>
+    </joint>
+
+    <xacro:rgbd_camera prefix="rgbd"/>
+
+    <xacro:mbot_base_gazebo/>
+
+</robot>

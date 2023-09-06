@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rgbd_camera">
+
+    <xacro:macro name="rgbd_camera" params="prefix:=camera">
+        <!-- Create rgbd reference frame -->
+        <!-- Add mesh for rgbd -->
+        <link name="${prefix}_link">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 ${M_PI/2}"/>
+                <geometry>
+                    <box size="0.15 0.04 0.04" />
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <box size="0.07 0.3 0.09"/>
+                </geometry>
+            </collision>
+        </link>
+
+        <joint name="${prefix}_optical_joint" type="fixed">
+            <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708"/>
+            <parent link="${prefix}_link"/>
+            <child link="${prefix}_frame_optical"/>
+        </joint>
+
+        <link name="${prefix}_frame_optical"/>
+
+        <gazebo reference="${prefix}_link">
+            <sensor type="depth" name="${prefix}">
+                <always_on>true</always_on>
+                <update_rate>15.0</update_rate>
+                <pose>0 0 0 0 0 0</pose>
+                <camera name="rgbd">
+                    <horizontal_fov>${60.0*M_PI/180.0}</horizontal_fov>
+                    <image>
+                        <format>R8G8B8</format>
+                        <width>640</width>
+                        <height>480</height>
+                    </image>
+                    <clip>
+                        <near>0.05</near>
+                        <far>8.0</far>
+                    </clip>
+                </camera>
+                <plugin name="${prefix}_controller" filename="libgazebo_ros_camera.so">
+		 		 	<ros>
+						<!-- <namespace>${prefix}</namespace> -->
+						<remapping>${prefix}/image_raw:=rgb/image_raw</remapping>
+						<remapping>${prefix}/image_depth:=depth/image_raw</remapping>
+						<remapping>${prefix}/camera_info:=rgb/camera_info</remapping>
+						<remapping>${prefix}/camera_info_depth:=depth/camera_info</remapping>
+						<remapping>${prefix}/points:=depth/points</remapping>
+					</ros>
+					<camera_name>${prefix}</camera_name>
+					<frame_name>${prefix}_frame_optical</frame_name>
+				    <hack_baseline>0.07</hack_baseline>
+				    <min_depth>0.001</min_depth>
+				    <max_depth>300.0</max_depth>
+                </plugin>
+            </sensor>
+        </gazebo>
+
+    </xacro:macro>
+</robot>
